@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organisation des Tâches Ménagères - Grand Lycée</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 50px;
+            color: #333333;
+            font-weight: bold;
+            font-size: 27px;
+        }
+
+        .task-section {
+            margin-bottom: 50px;
+        }
+
+        h2 {
+            color: #444;
+            margin-bottom: 30px;
+        }
+
+        .task-list, .history-list {
+            margin-top: 10px;
+            padding-left: 0;
+            list-style-type: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f9f9f9;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item p {
+            margin: 0;
+        }
+
+        .task-item button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .task-item button:hover {
+            background-color: #0056b3;
+        }
+
+        .confirm-button {
+            background-color: #28a745;
+            margin-left: 10px;
+        }
+
+        .confirm-button:hover {
+            background-color: #218838;
+        }
+
+        .add-task-form {
+            margin-bottom: 30px;
+        }
+
+        .add-task-form label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .add-task-form input, .add-task-form select, .add-task-form textarea, .add-task-form button {
+            padding: 10px;
+            margin-bottom: 10px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .add-task-form button {
+            background-color: #882184;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .add-task-form button:hover {
+            background-color: #242188;
+        }
+
+        /* Modal de confirmation */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 300px;
+            text-align: center;
+        }
+
+        .modal-content button {
+            margin: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-content .cancel {
+            background-color: #dc3545;
+        }
+
+        .modal-content .cancel:hover {
+            background-color: #c82333;
+        }
+
+        /* Check icon */
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .check-icon::before {
+            content: '✔';
+            font-size: 16px;
+        }
+
+        /* Styling for history list */
+        .history-list {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .history-list .task-item {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 5px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Organisation des Tâches Ménagères</h1>
+
+        <!-- Formulaire pour le gestionnaire -->
+        <div class="task-section">
+            <h2>Ajouter une Nouvelle Tâche</h2>
+            <form class="add-task-form" id="taskForm">
+                <label for="taskName">Nom de la Tâche :</label>
+                <input type="text" id="taskName" placeholder="Ex: Nettoyage des salles" required>
+
+                <label for="employeeName">Assignée à :</label>
+                <select id="employeeName" required>
+                    <option value="">Sélectionnez un employé</option>
+                    <option value="O'NET">O'NET</option>
+                    <option value="Agnes">Agnes</option>
+                    <option value="Agnes">Agnes</option>
+                    <option value="Agnes">Agnes</option>
+                </select>
+
+                <label for="taskDate">Date Limite :</label>
+                <input type="date" id="taskDate" required>
+
+                <label for="taskDetails">Détails de la Tâche :</label>
+                <textarea id="taskDetails" placeholder="Détails de la tâche" required></textarea>
+
+                <button type="submit">Ajouter la Tâche</button>
+            </form>
+        </div>
+
+        <!-- Espace entre les sections -->
+        <div style="margin-bottom: 40px;"></div>
+
+        <!-- Section des tâches en cours -->
+        <div class="task-section">
+            <h2>Tâches en cours</h2>
+            <ul class="task-list" id="taskList">
+                <!-- Les tâches en cours apparaîtront ici -->
+            </ul>
+        </div>
+
+        <!-- Section de l'historique des tâches terminées -->
+        <div class="task-section">
+            <h2>Historique des tâches complétées</h2>
+            <ul class="history-list" id="historyList">
+                <!-- Les tâches complètes apparaîtront ici -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation -->
+    <div class="modal" id="confirmationModal">
+        <div class="modal-content">
+            <p>Voulez-vous vraiment marquer cette tâche comme terminée ?</p>
+            <button id="confirmButton">Confirmer</button>
+            <button class="cancel" id="cancelButton">Annuler</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Gestionnaire du Lycée - Organisation des Tâches Ménagères</p>
+    </footer>
+
+    <script>
+        let currentTask;
+
+        // Fonction pour ajouter une tâche à la liste des tâches en cours
+        document.getElementById('taskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const taskName = document.getElementById('taskName').value;
+            const employeeName = document.getElementById('employeeName').value;
+            const taskDate = document.getElementById('taskDate').value;
+            const taskDetails = document.getElementById('taskDetails').value;
+
+            const taskList = document.getElementById('taskList');
+
+            // Créer un nouvel élément de tâche
+            const taskItem = document.createElement('li');
+            taskItem.className = 'task-item';
+            taskItem.innerHTML = `
+                <p><strong>Tâche :</strong> ${taskName}</p>
+                <p><strong>Assignée à :</strong> ${employeeName}</p>
+                <p><strong>Date Limite :</strong> ${taskDate}</p>
+                <p><strong>Détails :</strong> ${taskDetails}</p>
+                <button onclick="showConfirmation(this)">Marquer comme terminée</button>
+            `;
+
+            taskList.appendChild(taskItem);
+
+            // Réinitialiser le formulaire
+            document.getElementById('taskForm').reset();
+        });
+
+        // Fonction pour afficher la modal de confirmation
+        function showConfirmation(button) {
+            currentTask = button.parentElement; // Stocker la tâche actuelle
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+
+        // Fonction pour confirmer et marquer une tâche comme terminée
+        document.getElementById('confirmButton').addEventListener('click', function() {
+            addToHistory(currentTask);
+            currentTask.remove(); // Retirer la tâche de la liste des tâches en cours
+            document.getElementById('confirmationModal').style.display = 'none';
+        });
+
+        // Fonction pour annuler l'action
+        document.getElementById('cancelButton').addEventListener('click', function() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        });
+
+        // Fonction pour ajouter une tâche à l'historique
+        function addToHistory(task) {
+            const historyList = document.getElementById('historyList');
+            
+            const historyItem = document.createElement('li');
+            historyItem.className = 'task-item';
+            historyItem.innerHTML = `
+                <span class="check-icon"></span>
+                <p><strong>Tâche :</strong> ${task.children[0].textContent.replace('Tâche : ', '')}</p>
+                <p><strong>Assignée à :</strong> ${task.children[1].textContent.replace('Assignée à : ', '')}</p>
+                <p><strong>Date Limite :</strong> ${task.children[2].textContent.replace('Date Limite : ', '')}</p>
+                <p><strong>Détails :</strong> ${task.children[3].textContent.replace('Détails : ', '')}</p>
+            `;
+            
+            historyList.appendChild(historyItem);
+        }
+    </script>
+</body>
+</html>
